@@ -1,0 +1,271 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+/* =========================================
+   VARIABLES & BASE SETUP
+   ========================================= */
+:root {
+    --bg-dark: #111111;
+    --bg-darker: #050505;
+    --highlight: #00f3ff;
+    --text-main: #ffffff;
+    --text-muted: #aaaaaa;
+}
+
+* { 
+    margin: 0; 
+    padding: 0; 
+    box-sizing: border-box; 
+    font-family: 'Poppins', sans-serif; 
+}
+
+body { 
+    background-color: var(--bg-darker); 
+    color: var(--text-main); 
+    overflow-x: hidden; 
+}
+
+/* =========================================
+   BACKGROUNDS (3D Canvas & Video)
+   ========================================= */
+#canvas-container { 
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 100vh; 
+    z-index: 0; 
+    opacity: 0.6; 
+    border: 3px solid var(--highlight); 
+    box-shadow: inset 0 0 20px var(--highlight), 0 0 15px var(--highlight); 
+    pointer-events: none; 
+    transition: opacity 0.6s ease, visibility 0.6s ease;
+}
+
+#canvas-container.hidden {
+    opacity: 0;
+    visibility: hidden;
+}
+
+#bg-video {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover; 
+    z-index: 1; 
+    opacity: 0; 
+    visibility: hidden;
+    pointer-events: none; 
+    transition: opacity 0.6s ease, visibility 0.6s ease;
+}
+
+#bg-video.active {
+    opacity: 0.35;
+    visibility: visible;
+}
+
+/* Ensure content sits above backgrounds */
+.content-wrapper { 
+    position: relative; 
+    z-index: 10; 
+    min-height: 100vh; 
+}
+
+/* =========================================
+   NAVIGATION (Glassmorphism & Fixed)
+   ========================================= */
+header { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    padding: 20px 10%; 
+    
+    /* Matte Transparent (Frosted Glass) Effect */
+    background: rgba(10, 10, 10, 0.65); 
+    backdrop-filter: blur(12px); 
+    -webkit-backdrop-filter: blur(12px); 
+    
+    /* Fixed at the top */
+    position: fixed; 
+    top: 0; 
+    left: 0;
+    width: 100%; 
+    z-index: 1000; 
+    
+    border-bottom: 1px solid rgba(0, 243, 255, 0.1);
+}
+
+.logo { 
+    font-size: 24px; 
+    font-weight: 700; 
+    color: var(--text-main); 
+    text-shadow: 0 0 5px var(--highlight); 
+    z-index: 100; 
+}
+
+/* Hide mobile menu toggle on Desktop */
+.menu-toggle { display: none; }
+
+nav { position: relative; display: flex; align-items: center; }
+nav a { 
+    color: var(--text-muted); 
+    text-decoration: none; 
+    margin-left: 30px; 
+    font-size: 14px; 
+    font-weight: 600; 
+    padding-bottom: 5px; 
+    transition: color 0.3s ease; 
+}
+
+nav a:hover, nav a.active { 
+    color: var(--highlight); 
+    text-shadow: 0 0 8px var(--highlight); 
+}
+
+/* The Smooth Sliding Underline (Desktop Only) */
+.nav-slider { 
+    position: absolute; 
+    bottom: -2px; 
+    height: 2px; 
+    background-color: var(--highlight); 
+    box-shadow: 0 0 8px var(--highlight); 
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55); 
+    border-radius: 2px; 
+}
+
+/* =========================================
+   PAGE SECTIONS & VIEW TRANSITIONS
+   ========================================= */
+#main-content { position: relative; width: 100%; }
+
+.view { 
+    position: absolute; 
+    top: 0; left: 0; width: 100%; 
+    opacity: 0; 
+    visibility: hidden; 
+    transform: translateY(20px); 
+    transition: all 0.5s ease-in-out; 
+}
+
+.view.active { 
+    opacity: 1; 
+    visibility: visible; 
+    transform: translateY(0); 
+    position: relative; 
+}
+
+/* Hero Section */
+.hero { 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    justify-content: center; 
+    min-height: 100vh; 
+    text-align: center; 
+    padding: 80px 5% 0; /* Pushed down to clear the fixed navbar */
+}
+
+.profile-img-container { 
+    width: 180px; 
+    height: 180px; 
+    border-radius: 50%; 
+    border: 4px solid var(--highlight); 
+    box-shadow: 0 0 15px var(--highlight); 
+    padding: 5px; 
+    margin-bottom: 20px; 
+}
+
+.profile-img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+h1 { font-size: 48px; font-weight: 600; margin-bottom: 10px; }
+h2 { font-size: 18px; font-weight: 400; letter-spacing: 3px; color: var(--highlight); }
+
+/* Content Sections (About & Work) */
+.content-section { 
+    padding: 120px 10% 50px; /* 120px top padding ensures headings aren't hidden by navbar */
+    max-width: 1000px; 
+    margin: 0 auto; 
+}
+
+.content-section h2 { 
+    font-size: 36px; 
+    margin-bottom: 30px; 
+    border-bottom: 1px solid var(--bg-dark); 
+    padding-bottom: 10px; 
+    color: var(--highlight); 
+}
+
+.content-box { 
+    background: var(--bg-dark); 
+    border: 1px solid rgba(0, 243, 255, 0.2); 
+    padding: 30px; 
+    border-radius: 10px; 
+    margin-bottom: 20px; 
+    box-shadow: 0 4px 10px rgba(0,0,0,0.5); 
+    transition: transform 0.3s ease, box-shadow 0.3s ease; 
+}
+
+.content-box:hover { 
+    transform: translateY(-5px); 
+    box-shadow: 0 5px 15px rgba(0, 243, 255, 0.3); 
+    border-color: var(--highlight); 
+}
+
+.content-box h3 { margin-bottom: 15px; color: var(--highlight); }
+.content-box p, .skills-list { line-height: 1.6; color: var(--text-muted); margin-bottom: 10px; }
+.skills-list { margin-left: 20px; }
+
+/* =========================================
+   RESPONSIVE DESIGN (Tablets & Mobile)
+   ========================================= */
+@media (max-width: 768px) {
+    header { padding: 15px 5%; justify-content: space-between; }
+    
+    /* Show Hamburger Menu */
+    .menu-toggle { display: flex; flex-direction: column; cursor: pointer; z-index: 100; gap: 5px; }
+    .menu-toggle .bar { width: 30px; height: 3px; background-color: var(--text-main); transition: all 0.25s cubic-bezier(0.68, -0.55, 0.265, 1.55); border-radius: 3px; }
+    
+    /* Hamburger 'X' Animation */
+    .menu-toggle.active .bar:nth-child(1) { transform: translateY(8px) rotate(45deg); background-color: var(--highlight); box-shadow: 0 0 5px var(--highlight); }
+    .menu-toggle.active .bar:nth-child(2) { opacity: 0; }
+    .menu-toggle.active .bar:nth-child(3) { transform: translateY(-8px) rotate(-45deg); background-color: var(--highlight); box-shadow: 0 0 5px var(--highlight); }
+
+    /* Dropdown Nav Styling */
+    nav { 
+        position: absolute; 
+        top: 100%; 
+        left: 0; 
+        width: 100%; 
+        background-color: rgba(5, 5, 5, 0.95); 
+        backdrop-filter: blur(10px); 
+        flex-direction: column; 
+        padding: 0; 
+        opacity: 0; 
+        visibility: hidden; 
+        transform: translateY(-15px); 
+        transition: all 0.25s ease-out; 
+        z-index: 99; 
+        border-bottom: 2px solid var(--highlight); 
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5); 
+    }
+    
+    nav.open { opacity: 1; visibility: visible; transform: translateY(0); padding: 20px 0; }
+    nav a { margin: 15px 0; font-size: 16px; width: 100%; text-align: center; }
+    
+    /* Hide the sliding underline on mobile */
+    .nav-slider { display: none; }
+
+    /* Content Scaling */
+    h1 { font-size: 32px; }
+    h2 { font-size: 14px; letter-spacing: 1px; }
+    .profile-img-container { width: 140px; height: 140px; }
+    .hero { padding-top: 60px; }
+    .content-section { padding: 100px 5% 40px; }
+    .content-section h2 { font-size: 28px; }
+    .content-box { padding: 20px; }
+}
+
+@media (max-width: 480px) { 
+    h1 { font-size: 26px; } 
+    .profile-img-container { width: 120px; height: 120px; } 
+}
